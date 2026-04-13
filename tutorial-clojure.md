@@ -33,7 +33,7 @@ mkdir pge-prices && cd pge-prices
 
 ```clojure
 ;; deps.edn
-{:deps {energy.grid-coordination/clj-oa3-client {:mvn/version "0.2.0"}
+{:deps {energy.grid-coordination/clj-oa3-client {:mvn/version "0.3.0"}
         metosin/oz                              {:mvn/version "2.0.0-alpha5"}}
  :aliases
  {:repl {:main-opts ["-m" "nrepl.cmdline"]
@@ -64,7 +64,7 @@ clj
                      :user-agent "my-app/1.0 (contact@example.com)"})))
 ```
 
-The `:user-agent` parameter (new in 0.2.0) identifies your application in the server's access logs. It's optional but encouraged.
+The `:user-agent` parameter identifies your application in the server's access logs. It's optional but encouraged.
 
 Now list the programs. The Clojure client returns coerced entity maps with namespaced keywords:
 
