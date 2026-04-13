@@ -107,9 +107,14 @@ For real-time price notifications, subscribe to the MQTT broker:
 mosquitto_sub -h mqtt.grid-coordination.energy -p 1883 \
   -t 'openadr3/3.1.0/events/#' -v
 
-# TLS
+# TLS (Linux)
 mosquitto_sub -h mqtt.grid-coordination.energy -p 8883 \
   --capath /etc/ssl/certs \
+  -t 'openadr3/3.1.0/events/#' -v
+
+# TLS (macOS)
+mosquitto_sub -h mqtt.grid-coordination.energy -p 8883 \
+  --cafile /etc/ssl/cert.pem \
   -t 'openadr3/3.1.0/events/#' -v
 ```
 
