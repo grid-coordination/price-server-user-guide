@@ -37,33 +37,43 @@ curl -s https://price.grid-coordination.energy/openadr3/3.1.0/notifiers | python
 }
 ```
 
-## Topics
+## Discovering topics
 
-The VTN publishes to the standard OpenADR 3.1.0 topic hierarchy:
+Use the topic discovery endpoints to find the MQTT topics to subscribe to:
 
-```
-openadr3/3.1.0/programs/CREATE
-openadr3/3.1.0/programs/UPDATE
-openadr3/3.1.0/programs/DELETE
-openadr3/3.1.0/events/CREATE
-openadr3/3.1.0/events/UPDATE
-openadr3/3.1.0/events/DELETE
-openadr3/3.1.0/subscriptions/CREATE
-openadr3/3.1.0/subscriptions/UPDATE
-openadr3/3.1.0/subscriptions/DELETE
-```
+```bash
+# All event topics
+curl -s https://price.grid-coordination.energy/openadr3/3.1.0/notifiers/mqtt/topics/events | python3 -m json.tool
 
-To receive all notifications:
+# Events for a specific program
+PROGRAM_ID="<uuid>"
+curl -s "https://price.grid-coordination.energy/openadr3/3.1.0/notifiers/mqtt/topics/programs/$PROGRAM_ID/events" | python3 -m json.tool
 
-```
-openadr3/3.1.0/#
+# All program topics
+curl -s https://price.grid-coordination.energy/openadr3/3.1.0/notifiers/mqtt/topics/programs | python3 -m json.tool
 ```
 
-To receive only event notifications (price updates):
+Example response:
 
+```json
+{
+    "topics": {
+        "CREATE": "OpenADR/3.1.0/events/create",
+        "UPDATE": "OpenADR/3.1.0/events/update",
+        "DELETE": "OpenADR/3.1.0/events/delete",
+        "ALL":    "OpenADR/3.1.0/events/+"
+    }
+}
 ```
-openadr3/3.1.0/events/#
-```
+
+Subscribe to `ALL` to receive all event operations, or pick specific ones.
+
+| Discovery endpoint | Description |
+|----------|-------------|
+| `/notifiers/mqtt/topics/programs` | All program notifications |
+| `/notifiers/mqtt/topics/programs/{programID}` | Single program update/delete |
+| `/notifiers/mqtt/topics/programs/{programID}/events` | Events for a specific program |
+| `/notifiers/mqtt/topics/events` | All event notifications |
 
 ## Message format
 
@@ -90,17 +100,17 @@ Each message is a JSON object representing the OpenADR 3 entity that was created
 ```bash
 # Plain TCP
 mosquitto_sub -h mqtt.grid-coordination.energy -p 1883 \
-  -t 'openadr3/3.1.0/events/#' -v
+  -t 'OpenADR/3.1.0/events/#' -v
 
 # TLS (Linux)
 mosquitto_sub -h mqtt.grid-coordination.energy -p 8883 \
   --capath /etc/ssl/certs \
-  -t 'openadr3/3.1.0/events/#' -v
+  -t 'OpenADR/3.1.0/events/#' -v
 
 # TLS (macOS)
 mosquitto_sub -h mqtt.grid-coordination.energy -p 8883 \
   --cafile /etc/ssl/cert.pem \
-  -t 'openadr3/3.1.0/events/#' -v
+  -t 'OpenADR/3.1.0/events/#' -v
 ```
 
 ### Python (paho-mqtt)
@@ -115,7 +125,7 @@ import ssl, json
 
 def on_connect(client, userdata, flags, rc, props=None):
     print(f"Connected (rc={rc})")
-    client.subscribe("openadr3/3.1.0/events/#")
+    client.subscribe("OpenADR/3.1.0/events/#")
 
 def on_message(client, userdata, msg):
     event = json.loads(msg.payload)
@@ -146,7 +156,7 @@ client.loop_forever()
               {:client-id "my-price-listener"}))
 
 (mh/subscribe client
-  {"openadr3/3.1.0/events/#" 1}
+  {"OpenADR/3.1.0/events/#" 1}
   (fn [topic meta payload]
     (println topic ":" (String. payload))))
 ```
