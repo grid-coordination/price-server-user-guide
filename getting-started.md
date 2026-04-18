@@ -10,6 +10,8 @@ https://price.grid-coordination.energy/openadr3/3.1.0
 
 No authentication is required. All endpoints are read-only.
 
+You can also explore the API interactively at [/api](https://price.grid-coordination.energy/api), or download the [OpenAPI spec](https://price.grid-coordination.energy/openapi.json) for use with code generators and other tools.
+
 ## 1. Choose your rate and circuit
 
 To get prices, you need to identify two things:
