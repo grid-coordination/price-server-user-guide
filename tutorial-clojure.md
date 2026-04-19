@@ -301,9 +301,10 @@ If tomorrow's data hasn't been published yet (which sometimes happens early in t
 
 ## Going further
 
-- **All 492 programs**: paginate via the raw API: `(base/search-programs my-ven {:skip 50})`, `{:skip 100}`, etc.
+- **All 503 programs**: paginate via the raw API: `(base/search-programs my-ven {:skip 50})`, `{:skip 100}`, etc.
 - **Other PG&E rates**: `BEV1` (commercial EV), `BEV2P`/`BEV2S`, `B6` (small commercial), `B19P` (medium commercial primary). Same 59 circuits per rate.
 - **SCE rates**: `TOU-PRIME`, `TOU-D-49`, `TOU-D-58` — 46 substations each. SCE prices are ~$0.18/kWh vs PG&E's ~$0.03/kWh.
+- **GHG emissions**: `MOER-PGE`, `MOER-SCE`, `MOER-SDGE`, and 8 other regional programs publish hourly marginal GHG emissions in g CO2/kWh. Fetch the same way as prices: `(ven/poll-events my-ven {:program-id (ven/resolve-program-id my-ven "MOER-PGE")})`. See [README.md#ghg-emissions-moer](README.md#ghg-emissions-moer).
 - **Raw HTTP access**: `base/programs` returns coerced entities. For the raw wire format use `base/get-programs` (returns the HTTP response map).
 - **Subscribe to price updates via MQTT**: the broker at `mqtt.grid-coordination.energy` supports anonymous subscribe on `openadr3/3.1.0/events/#`. See [mqtt-notifications.md](mqtt-notifications.md). Use `ven/add-mqtt` and `ven/subscribe`.
 - **User-Agent**: set `:user-agent "your-app/1.0"` when creating the client so the server operator can identify your application in access logs.

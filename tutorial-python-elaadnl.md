@@ -183,6 +183,7 @@ Intervals are ordered by hour (0 = midnight local, 23 = 11 PM local). Prices are
 ## Going further
 
 - **Other rates**: PG&E serves EELEC, BEV1, BEV2P, BEV2S, B6, B19P. SCE serves TOU-PRIME, TOU-D-49, TOU-D-58. Paginate with `pagination` to find them.
+- **GHG emissions**: 11 MOER programs (`MOER-PGE`, `MOER-SCE`, etc.) publish hourly marginal GHG emissions in g CO2/kWh. Fetch the same way as prices — find the program, get events, read interval payloads. See [README.md#ghg-emissions-moer](README.md#ghg-emissions-moer).
 - **Pandas DataFrame support**: `pip install 'openadr3-client[pandas]'` adds event interval conversion to DataFrames — great for analysis.
 - **MQTT notifications**: `pip install 'openadr3-client[mqtt]'` adds MQTT support. The price server's broker is at `mqtt.grid-coordination.energy` (ports 1883/8883). See [mqtt-notifications.md](mqtt-notifications.md).
 - **Historical data**: events go back ~600 days for PG&E, ~200 days for SCE. Page through events to access history.

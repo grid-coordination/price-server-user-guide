@@ -251,6 +251,7 @@ println!("{} SCE programs", sce_programs.len());
 
 ## Going further
 
+- **GHG emissions**: 11 MOER programs (`MOER-PGE`, `MOER-SCE`, etc.) publish hourly marginal GHG emissions in g CO2/kWh. Fetch the same way as prices — find the program, get events, read interval payloads. See [README.md#ghg-emissions-moer](README.md#ghg-emissions-moer).
 - **MQTT notifications**: subscribe to `tcp://mqtt.grid-coordination.energy:1883` or `mqtts://:8883` topic `openadr3/3.1.0/events/#` for push updates. See [mqtt-notifications.md](mqtt-notifications.md).
 - **Historical data**: events go back to ~August 2024 for PG&E, ~July 2025 for SCE. The `get_event_list` call returns all available events.
 - **openleadr-rs docs**: full API documentation at [docs.rs/openleadr-client](https://docs.rs/openleadr-client/latest/openleadr_client/).

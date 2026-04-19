@@ -31,7 +31,7 @@ List programs to find the UUID for your program name:
 curl -s https://price.grid-coordination.energy/openadr3/3.1.0/programs | python3 -m json.tool
 ```
 
-The default page returns 50 programs. There are 492 total. Use `?skip=50` to paginate:
+The default page returns 50 programs. There are 503 total (492 pricing + 11 GHG emissions). Use `?skip=50` to paginate:
 
 ```bash
 curl -s 'https://price.grid-coordination.energy/openadr3/3.1.0/programs?skip=50' | python3 -m json.tool
@@ -100,7 +100,46 @@ Hour     Price ($/kWh)
 23:00    $0.02893
 ```
 
-## 5. Subscribe to updates via MQTT
+## 5. Get GHG emissions data
+
+The price server also publishes hourly marginal GHG emissions (MOER) for 11 California grid regions. The data works the same way as pricing — programs and events with hourly intervals.
+
+Find a MOER program:
+
+```bash
+curl -s 'https://price.grid-coordination.energy/openadr3/3.1.0/programs?skip=490&limit=50' \
+  | python3 -c "
+import json, sys
+programs = json.load(sys.stdin)
+for p in programs:
+    if 'MOER-PGE' == p['programName']:
+        print(json.dumps(p, indent=2))
+        break
+"
+```
+
+Fetch today's emissions and print a table:
+
+```bash
+MOER_PROGRAM_ID="<uuid-from-above>"
+curl -s "https://price.grid-coordination.energy/openadr3/3.1.0/events?programID=$MOER_PROGRAM_ID" \
+  | python3 -c "
+import json, sys
+events = json.load(sys.stdin)
+for event in events[:1]:
+    print(event['eventName'])
+    print(f\"{'Hour':<8} {'Emissions (g CO2/kWh)'}\")
+    print('-' * 35)
+    for interval in event['intervals']:
+        hour = interval['id']
+        ghg = interval['payloads'][0]['values'][0]
+        print(f'{hour:02d}:00    {ghg:8.1f}')
+"
+```
+
+The `payloadType` is `GHG` and the values are in **g CO2/kWh**. Available programs: `MOER-PGE`, `MOER-SCE`, `MOER-SDGE`, `MOER-LADWP`, `MOER-SMUD`, `MOER-BANC`, `MOER-IID`, `MOER-PACW`, `MOER-NVE`, `MOER-TID`, `MOER-WALC`. See the [full list](README.md#ghg-emissions-moer).
+
+## 6. Subscribe to updates via MQTT
 
 For real-time price notifications, subscribe to the MQTT broker:
 

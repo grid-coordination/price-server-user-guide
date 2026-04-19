@@ -251,11 +251,40 @@ If tomorrow's data isn't yet published by GridX, the second column will be all d
 
 > **Historical prices:** The price server archives older prices going back as far as GridX has data (~August 2024 for PG&E, ~July 2025 for SCE). Historical events are available via the same `poll_events()` call — iterate over the returned list and filter by date.
 
+## 7. Fetch GHG emissions data
+
+The price server also publishes hourly marginal GHG emissions (MOER) for 11 California grid regions. The API works identically to pricing — just a different program name and payload type.
+
+```python
+# Find the MOER-PGE program (GHG emissions for PG&E territory)
+moer_prog = ven.find_program_by_name("MOER-PGE")
+print(f"GHG program: {moer_prog.program_name}")
+print(f"  payload: {moer_prog.payload_descriptors[0].payload_type}")  # "GHG"
+print(f"  units:   {moer_prog.payload_descriptors[0].units}")          # "g/kWh"
+
+# Fetch today's emissions
+moer_events = ven.poll_events("MOER-PGE")
+moer_today = moer_events[0]
+
+print(f"\n{moer_today.event_name}")
+print(f"{'Hour':<8} {'Emissions (g CO2/kWh)'}")
+print("-" * 35)
+for interval in moer_today.intervals:
+    hour = interval.id
+    ghg = float(interval.payloads[0].values[0])
+    print(f"{hour:02d}:00    {ghg:8.1f}")
+```
+
+Available MOER programs: `MOER-PGE`, `MOER-SCE`, `MOER-SDGE`, `MOER-LADWP`, `MOER-SMUD`, `MOER-BANC`, `MOER-IID`, `MOER-PACW`, `MOER-NVE`, `MOER-TID`, `MOER-WALC`.
+
+> **Tip:** Combine price and emissions data to optimize for both cost *and* carbon. Low prices often coincide with high solar generation and low emissions (midday), while high prices and high emissions tend to occur during evening peak hours.
+
 ## Going further
 
-- **All 492 programs**: paginate with `ven.api.get_programs(skip=50)`, `skip=100`, etc. The first page shows PG&E EELEC circuits; later pages have BEV1, B6, B19P, and the SCE tariffs.
+- **All 503 programs**: paginate with `ven.api.get_programs(skip=50)`, `skip=100`, etc. The first page shows PG&E EELEC circuits; later pages have BEV1, B6, B19P, SCE tariffs, and MOER programs.
 - **Other PG&E rates**: `BEV1` (commercial EV), `BEV2P`/`BEV2S` (business EV), `B6` (small commercial), `B19P` (medium commercial). Same 59 circuits per rate.
 - **SCE rates**: `TOU-PRIME`, `TOU-D-49`, `TOU-D-58` — 46 substations each. SCE prices are significantly higher (~$0.18/kWh vs PG&E's ~$0.03/kWh).
+- **GHG emissions**: 11 MOER programs covering California and neighboring grid regions. Values in g CO2/kWh. See [README.md#ghg-emissions-moer](README.md#ghg-emissions-moer) for the full list.
 - **Subscribe to price updates via MQTT**: the broker at `mqtt.grid-coordination.energy` supports anonymous subscribe on `openadr3/3.1.0/events/#`. See [mqtt-notifications.md](mqtt-notifications.md) for details.
 - **User-Agent**: set `user_agent="your-app/1.0"` when creating the client so the server operator can identify your application in access logs.
 
