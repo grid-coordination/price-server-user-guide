@@ -1,12 +1,13 @@
 # Price Server User Guide
 
-Public documentation for the [Grid Coordination](https://grid-coordination.energy) price server — an [OpenADR 3.1.0](https://www.openadr.org/) VTN serving hourly California marginal electricity prices from the CAISO Day-Ahead Market via [GridX](https://www.gridx.com/).
+Public documentation for the [Grid Coordination](https://grid-coordination.energy) price server — an [OpenADR 3.1.0](https://www.openadr.org/) VTN serving hourly California electricity prices and GHG emissions data.
 
 ## What is the price server?
 
-The price server publishes real-time and historical electricity prices for **PG&E** and **SCE** rate schedules as OpenADR 3 programs and events. Each program represents a specific rate schedule × distribution circuit (PG&E) or substation (SCE) combination. Each event contains 24 hourly price intervals for one day.
+The price server publishes real-time and historical electricity prices for **PG&E** and **SCE** rate schedules, plus hourly marginal GHG emissions intensity (MOER) for 11 California grid regions, as OpenADR 3 programs and events.
 
-Prices are marginal cost in USD/kWh from the CAISO Day-Ahead Market, composed through GridX CalFUSE rate calculations.
+- **Prices**: Marginal cost in USD/kWh from the CAISO Day-Ahead Market via [GridX](https://www.gridx.com/) CalFUSE
+- **GHG emissions**: Marginal Operating Emissions Rate (MOER) in g CO2/kWh from [SGIP Signal](https://sgipsignal.com/) (operated by WattTime for the CPUC)
 
 ## Available tariffs
 
@@ -21,9 +22,29 @@ Prices are marginal cost in USD/kWh from the CAISO Day-Ahead Market, composed th
 | **SCE** | `TOU-PRIME` | Residential time-of-use premium | 46 (one per substation) |
 | **SCE** | `TOU-D-49` | Residential time-of-use 4–9 PM peak | 46 |
 | **SCE** | `TOU-D-58` | Residential time-of-use 5–8 PM peak | 46 |
-| | | **Total** | **492 programs** |
+| | | **Subtotal** | **492 pricing programs** |
 
 PG&E programs are named `<RATE>-<9-digit-circuit-id>` (e.g. `EELEC-013532223`). SCE programs are named `<RATE>-<substation>` (e.g. `TOU-PRIME-Eagle Rock`).
+
+### GHG emissions (MOER)
+
+| Region | Program | Description |
+|--------|---------|-------------|
+| `SGIP_CAISO_PGE` | `MOER-PGE` | Pacific Gas & Electric (CAISO) |
+| `SGIP_CAISO_SCE` | `MOER-SCE` | Southern California Edison (CAISO) |
+| `SGIP_CAISO_SDGE` | `MOER-SDGE` | San Diego Gas & Electric (CAISO) |
+| `SGIP_LADWP` | `MOER-LADWP` | Los Angeles DWP |
+| `SGIP_BANC_SMUD` | `MOER-SMUD` | Sacramento Municipal Utility District |
+| `SGIP_BANC_P2` | `MOER-BANC` | Balancing Authority of Northern California |
+| `SGIP_IID` | `MOER-IID` | Imperial Irrigation District |
+| `SGIP_PACW` | `MOER-PACW` | PacifiCorp West |
+| `SGIP_NVENERGY` | `MOER-NVE` | NV Energy |
+| `SGIP_TID` | `MOER-TID` | Turlock Irrigation District |
+| `SGIP_WALC` | `MOER-WALC` | Western Area Lower Colorado |
+
+MOER programs publish hourly marginal operating emissions rate in **g CO2/kWh**, aggregated from native 5-minute [SGIP Signal](https://sgipsignal.com/) data. Each event contains 24 hourly intervals, same as pricing events.
+
+**Total: 503 programs** (492 pricing + 11 GHG emissions)
 
 ## Finding your program
 
@@ -89,17 +110,19 @@ One program per rate schedule × circuit/substation:
 
 One event per program per day, with 24 hourly intervals:
 
-| Field | Example |
-|-------|---------|
-| `eventName` | `EELEC-013532223-2026-04-12` |
-| `programID` | UUID linking to the program |
-| `intervals[n].id` | Hour of day (0 = midnight, 23 = 11 PM) |
-| `intervals[n].payloads[0].type` | `PRICE` |
-| `intervals[n].payloads[0].values[0]` | `0.02622` ($/kWh) |
+| Field | Pricing Example | GHG Example |
+|-------|----------------|-------------|
+| `eventName` | `EELEC-013532223-2026-04-12` | `MOER-PGE-2026-04-12` |
+| `programID` | UUID linking to the program | UUID linking to the program |
+| `intervals[n].id` | Hour of day (0 = midnight, 23 = 11 PM) | Hour of day (0 = midnight, 23 = 11 PM) |
+| `intervals[n].payloads[0].type` | `PRICE` | `GHG` |
+| `intervals[n].payloads[0].values[0]` | `0.02622` ($/kWh) | `661.2` (g CO2/kWh) |
 
 ### Forward window and history
 
-The price server fetches a **7-day forward window** (today + 6 days) from GridX on startup and every hour. Day-ahead prices are typically available by ~4:30 PM PST. Historical prices go back to approximately August 2024 for PG&E and July 2025 for SCE.
+**Prices**: The price server fetches a **7-day forward window** (today + 6 days) from GridX on startup and every hour. Day-ahead prices are typically available by ~4:30 PM PST. Historical prices go back to approximately August 2024 for PG&E and July 2025 for SCE.
+
+**GHG emissions**: MOER data is fetched hourly from SGIP Signal. Today's event fills in progressively as 5-minute data becomes available. Historical data goes back approximately 30 days from initial deployment.
 
 ## Getting started
 
