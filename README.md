@@ -107,6 +107,8 @@ https://price.grid-coordination.energy/openadr3/3.1.0
 
 Standard OpenADR 3.1.0 endpoints: `/programs`, `/events`, `/subscriptions`, `/notifiers`. Read-only, no authentication required.
 
+**Extension: `programName` lookup.** This server supports `GET /programs?programName=<name>` for direct program lookup by name, returning 0 or 1 results. This avoids paginating the full program list. We have [proposed this as a standard addition](https://github.com/oadr3-org/specification/issues/418) to the OpenADR 3 specification.
+
 ### MQTT (push notifications)
 
 | Transport | URL | Port |

@@ -31,13 +31,13 @@ List programs to find the UUID for your program name:
 curl -s https://price.grid-coordination.energy/openadr3/3.1.0/programs | python3 -m json.tool
 ```
 
-The default page returns 50 programs. There are 1,645 total (31 pricing tariffs × location + 11 GHG regions). Use `?skip=50` to paginate:
+The default page returns 50 programs. Use `?skip=50` to paginate:
 
 ```bash
 curl -s 'https://price.grid-coordination.energy/openadr3/3.1.0/programs?skip=50' | python3 -m json.tool
 ```
 
-Filter for a specific program:
+Filter for a specific program by scanning the results:
 
 ```bash
 curl -s https://price.grid-coordination.energy/openadr3/3.1.0/programs \
@@ -50,6 +50,15 @@ for p in programs:
         break
 "
 ```
+
+**Shortcut: `programName` query.** This server also supports direct lookup by name, which avoids paginating the full list:
+
+```bash
+curl -s 'https://price.grid-coordination.energy/openadr3/3.1.0/programs?programName=EELEC-013532223' \
+  | python3 -m json.tool
+```
+
+> **Note:** The `programName` query parameter is a [proposed extension](https://github.com/oadr3-org/specification/issues/418) to OpenADR 3 supported by this server. It is not yet part of the standard specification.
 
 Note the `id` field (a UUID) — you'll use it to query events.
 
