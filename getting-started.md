@@ -31,7 +31,7 @@ List programs to find the UUID for your program name:
 curl -s https://price.grid-coordination.energy/openadr3/3.1.0/programs | python3 -m json.tool
 ```
 
-The default page returns 50 programs. Use `?skip=50` to paginate:
+The default page returns 50 programs. You can request a different page size using `?limit=N`, but 50 is the maximum - you cannot request more than 50 programs at a time. Use `?skip=N` to paginate beyond the first page:
 
 ```bash
 curl -s 'https://price.grid-coordination.energy/openadr3/3.1.0/programs?skip=50' | python3 -m json.tool
