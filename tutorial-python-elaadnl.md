@@ -94,7 +94,7 @@ Output:
   EELEC-024040403
 ```
 
-> **Note:** The default page size is 50. There are 1,645 programs total (31 tariffs × location + 11 GHG regions). Use the `pagination` parameter to page through them.
+> **Note:** You'll see 50 programs per page (the OpenADR 3 pagination limit). There are 1,645 programs total (31 tariffs × location + 11 GHG regions). Use the `pagination` parameter to page through them. For e.g. `ven.programs.get_programs(target=None, pagination=PaginationFilter(skip=50, limit=50))` will get the second page of 50 programs.
 
 The ElaadNL models are Pydantic v2 with strong typing. Each program has:
 
