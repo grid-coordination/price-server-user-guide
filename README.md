@@ -1,10 +1,10 @@
 # Price Server User Guide
 
-Public documentation for the [Grid Coordination](https://grid-coordination.energy) price server — an [OpenADR 3.1.0](https://www.openadr.org/) VTN serving hourly California electricity prices and GHG emissions data.
+Public documentation for the [Grid Coordination](https://grid-coordination.energy) price server — an [OpenADR 3](https://www.openadr.org/) VTN serving hourly California electricity prices and GHG emissions data.
 
 ## What is the price server?
 
-The price server is a universal electricity price signal layer. It publishes hourly prices from two kinds of tariffs, plus GHG emissions data — all as [OpenADR 3.1.0](https://www.openadr.org/) programs and events.
+The price server is a universal electricity price signal layer. It publishes hourly prices from two kinds of tariffs, plus GHG emissions data — all as [OpenADR 3](https://www.openadr.org/) programs and events.
 
 - **Feed-based pricing** — dynamic CAISO Day-Ahead Market prices via [GridX](https://www.gridx.com/) CalFUSE, updated hourly
 - **Computed pricing** — published rate schedules from [OpenEI URDB](https://openei.org/wiki/Utility_Rate_Database), prices generated from the tariff definition
@@ -108,7 +108,7 @@ The combination determines your program name: `EELEC-013532223` or `TOU-PRIME-Ea
 https://price.grid-coordination.energy/openadr3/3.1.0
 ```
 
-Standard OpenADR 3.1.0 endpoints: `/programs`, `/events`, `/subscriptions`, `/notifiers`. Read-only, no authentication required.
+Standard OpenADR 3 endpoints: `/programs`, `/events`, `/subscriptions`, `/notifiers`. Read-only, no authentication required.
 
 **Extension: `programName` lookup.** This server supports `GET /programs?programName=<name>` for direct program lookup by name, returning 0 or 1 results. This avoids paginating the full program list. We have [proposed this as a standard addition](https://github.com/oadr3-org/specification/issues/418) to the OpenADR 3 specification.
 
