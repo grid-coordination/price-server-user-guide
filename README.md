@@ -229,6 +229,22 @@ Issues, Discussions, and pull requests are welcome — see [CONTRIBUTING.md](CON
 - **Confirmed bugs, doc fixes, agreed-upon changes** → [Issues](https://github.com/grid-coordination/price-server-user-guide/issues)
 - **Patches** → pull requests; please open a Discussion or Issue first for non-trivial changes
 
+## Disclaimer
+
+The price server is provided **as-is, on a best-efforts basis**, free of charge as a public service. There is no SLA, no warranty (express or implied), and no guarantee of availability, accuracy, completeness, or fitness for any particular purpose.
+
+**Upstream data.** The prices and emissions values we publish are derived from third-party sources we do not control:
+
+- Feed-based prices come from [GridX](https://www.gridx.com/) CalFUSE (sourced from CAISO Day-Ahead Market)
+- Computed tariff definitions come from the [OpenEI Utility Rate Database](https://openei.org/wiki/Utility_Rate_Database)
+- GHG emissions come from [SGIP Signal](https://sgipsignal.com/) (operated by WattTime for the CPUC)
+
+If an upstream source publishes incorrect, delayed, or missing data, that error will flow through to what the price server publishes. Our role is to repackage these signals into the OpenADR 3 protocol — we are not the source of truth for the underlying prices or emissions rates.
+
+**Our code.** The price server is software, and software has bugs. Despite testing, it is possible that a logic error in the server itself could result in incorrect or inaccurate prices being published. Bug reports are welcome via [Issues](https://github.com/grid-coordination/price-server-user-guide/issues).
+
+**Use at your own risk.** Do not rely on this service for safety-critical, life-critical, or financially material decisions without independent verification against the upstream source. We may modify, pause, or discontinue the service at any time without notice. Operators of EMS, appliances, or any automated system that consumes these signals are responsible for sanity-checking the values they receive and handling missing or anomalous data gracefully.
+
 ## License
 
 [MIT License](LICENSE) - Copyright (c) 2026 Clark Communications Corporation
