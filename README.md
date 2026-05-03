@@ -7,7 +7,9 @@ Public documentation for the [Grid Coordination](https://grid-coordination.energ
 The price server is a universal electricity price signal layer. It publishes hourly prices from two kinds of tariffs, plus GHG emissions data — all as [OpenADR 3](https://www.openadr.org/) programs and events.
 
 - **Feed-based pricing** — dynamic CAISO Day-Ahead Market prices via [GridX](https://www.gridx.com/) CalFUSE, updated hourly
-- **Computed pricing** — published rate schedules from [OpenEI URDB](https://openei.org/wiki/Utility_Rate_Database), prices generated from the tariff definition
+- **Computed pricing** — published rate schedules with prices generated mathematically from the tariff definition. Two sources:
+  - [URPX](https://lfenergy.org/projects/utility-rate-plan-exchange-urpx/) (Utility Rate Plan eXchange — an LF Energy semantic standard) is the canonical source going forward, modelled directly from utility PDF filings. Supports composition with rate-plan modifiers (e.g. CARE/FERA discounts, energy efficiency credits, net metering).
+  - URDB ([OpenEI Utility Rate Database](https://openei.org/wiki/Utility_Rate_Database)) is kept as a transitional source for schedules that don't have URPX coverage yet.
 - **GHG emissions** — Marginal Operating Emissions Rate (MOER) in g CO2/kWh from [SGIP Signal](https://sgipsignal.com/) (operated by WattTime for the CPUC)
 
 An EMS or appliance (VEN) just sees hourly price intervals and optimizes its energy use — it doesn't need to know whether the price comes from a dynamic market or a published TOU schedule. When prices vary, the appliance optimizes. When they don't (flat rate), there's nothing to optimize — but the protocol is the same.
@@ -46,18 +48,21 @@ An EMS or appliance (VEN) just sees hourly price intervals and optimizes its ene
 
 Each tariff × location combination is an OpenADR 3 program. PG&E programs are named `<RATE>-<9-digit-circuit-id>` (e.g. `EELEC-013532223`). SCE programs are named `<RATE>-<substation>` (e.g. `TOU-PRIME-Eagle Rock`).
 
-### Computed tariffs (URDB)
+### Computed tariffs (URPX, canonical)
 
-Published rate schedules from the [OpenEI Utility Rate Database](https://openei.org/wiki/Utility_Rate_Database). Prices are computed from the tariff definition — no external data feed needed. Coverage continues to expand toward full California utility coverage.
+Tariffs modelled in URPX from utility PDF filings. Prices are computed from the tariff definition — no external data feed needed. The catalog covers PG&E, SCE, SDG&E, CPAU (City of Palo Alto Utilities), and LADWP residential schedules, with more added regularly.
 
-| Utility | Rate(s) | Type | Program(s) |
-|---------|---------|------|------------|
-| **PG&E** | E-1 Region P | Residential TOU | `PGE-E-1 - Baseline Region P` |
-| **SCE** | TOU-D-2 | Residential TOU | `SCE-Time-of-use Domestic: TOU-D-2` |
-| **SDG&E** | DR-TOU Coastal | Residential TOU | `SDGE-DR- TOU- Coastal Baseline Region` |
-| **City of Palo Alto Utilities** | Multiple schedules | Residential, Commercial, Municipal | `City-Schedule E1 ...`, `City-Large Commercial ...`, etc. |
+URPX rate plans support **rate-plan modifier** composition — e.g. an energy efficiency credit (EEC), hardship rate adjuster (HRA), net surplus electricity credit (NSE), or income-qualified discount (CARE/FERA, where modeled). Each (base, modifier) combination becomes its own program with its own price schedule.
 
-One program per URDB tariff. Unlike feed-based tariffs, computed tariffs don't vary by circuit or substation — the published rate schedule applies uniformly.
+Programs follow a CURIE-derived naming convention: `<UTILITY>-<RATE-ID>` for bases (e.g. `CPAU-E-1`, `SCE-D`, `PGE-E-ELEC`), and `<UTILITY>-<RATE-ID>-<MODIFIER-ID>` for modifier-applied variants (e.g. `SCE-D-DEED-RESTRICTED`, `CPAU-E-1-E-EEC-1`).
+
+> See [computed-tariffs-urpx.md](computed-tariffs-urpx.md) for the full list of currently-published URPX programs.
+
+### Computed tariffs (URDB, transitional)
+
+[OpenEI URDB](https://openei.org/wiki/Utility_Rate_Database) tariffs kept for schedules that don't have URPX coverage yet — e.g. SCE TOU-D-2, SDG&E DR-TOU Coastal Baseline, several CPAU commercial and municipal rates. These programs use the URDB tariff name directly (e.g. `SCE-Time-of-use Domestic: TOU-D-2`, `City-Large Commercial Service`). They will be retired as URPX equivalents become available.
+
+One program per URPX or URDB tariff. Unlike feed-based tariffs, computed tariffs don't vary by circuit or substation — the published rate schedule applies uniformly.
 
 ### GHG emissions (MOER)
 
@@ -90,7 +95,7 @@ The combination determines your program name: `EELEC-013532223` or `TOU-PRIME-Ea
 
 **How to find your circuit or substation:** If you don't know which circuit or substation serves your location, you can browse the full list in [circuits.md](circuits.md) — it includes the substation name, division, and region for every PG&E circuit, and all 46 SCE substation names. PG&E customers on the Dynamic Rate Pilot can find their circuit ID on their billing statement or through the [Priicer community](https://forum.priicer.com/t/pg-e-dynamic-pilot-california/33).
 
-**For computed tariffs (URDB):** Just find the program by name — no circuit needed. These programs use the tariff name directly (e.g. `PGE-E-1 - Baseline Region P`).
+**For computed tariffs (URPX or URDB):** Just find the program by name — no circuit needed. URPX programs use a short canonical name (e.g. `CPAU-E-1-TOU`, `PGE-E-ELEC`); URDB programs use the URDB tariff name directly (e.g. `City-Schedule E2 Small Commercial Electric Service`). See [computed-tariffs-urpx.md](computed-tariffs-urpx.md) for the URPX catalog.
 
 ## How to access
 
@@ -162,7 +167,7 @@ for p in sorted(prefixes):
 EOF
 ```
 
-Output groups feed-based PG&E rates by prefix (`EELEC`, `BEV1`, …), SCE rates by prefix (`TOU-PRIME`, `TOU-D-49`, …), MOER regions by prefix (`MOER-PGE`, …), and lists URDB programs individually (each URDB tariff has its own full name).
+Output groups feed-based PG&E rates by prefix (`EELEC`, `BEV1`, …), SCE rates by prefix (`TOU-PRIME`, `TOU-D-49`, …), MOER regions by prefix (`MOER-PGE`, …), and lists URPX/URDB computed-tariff programs individually (URPX uses canonical CURIE-based names like `CPAU-E-1`, `SCE-D-DEED-RESTRICTED`; URDB uses the original tariff title).
 
 For paginated access in Python, Clojure, or Rust, see the language tutorials.
 
@@ -172,13 +177,13 @@ For paginated access in Python, Clojure, or Rust, see the language tutorials.
 
 One program per tariff (computed) or per tariff × location (feed-based):
 
-| Field | Feed-based (GridX) | Computed (URDB) |
-|-------|-------------------|-----------------|
-| `programName` | `EELEC-013532223` | `PGE-E-1 - Baseline Region P` |
-| `programLongName` | `PG&E EELEC — circuit 013532223` | `Pacific Gas & Electric Co E-1 - Baseline Region P (TOU, URDB)` |
-| `payloadDescriptors[0].payloadType` | `PRICE` | `PRICE` |
-| `payloadDescriptors[0].units` | `kWh` | `kWh` |
-| `payloadDescriptors[0].currency` | `USD` | `USD` |
+| Field | Feed-based (GridX) | Computed (URPX) | Computed (URDB) |
+|-------|-------------------|-----------------|-----------------|
+| `programName` | `EELEC-013532223` | `CPAU-E-1` | `SCE-Time-of-use Domestic: TOU-D-2` |
+| `programLongName` | `PG&E EELEC — circuit 013532223` | `City of Palo Alto Utilities Residential Electric Service (URPX)` | `Southern California Edison Co Time-of-use Domestic: TOU-D-2 (TOU, URDB)` |
+| `payloadDescriptors[0].payloadType` | `PRICE` | `PRICE` | `PRICE` |
+| `payloadDescriptors[0].units` | `kWh` | `kWh` | `kWh` |
+| `payloadDescriptors[0].currency` | `USD` | `USD` | `USD` |
 
 ### Events
 
@@ -196,7 +201,7 @@ One event per program per day, with 24 hourly intervals:
 
 **Feed-based prices (GridX)**: Fetched on startup and every hour. In practice, CAISO Day-Ahead Market data is available for **today + ~2 days** (day-ahead prices are typically published by ~4:30 PM PST). Historical prices go back to approximately August 2024 for PG&E and July 2025 for SCE.
 
-**Computed prices (URDB)**: Generated on startup and refreshed daily. Events cover **today + 2 days**. No historical backfill — the tariff definition is the source of truth, and prices are computed on demand for the forward window.
+**Computed prices (URPX, URDB)**: Generated on startup and refreshed daily. Events cover **today + 2 days**. No historical backfill — the tariff definition is the source of truth, and prices are computed on demand for the forward window.
 
 **GHG emissions**: MOER data is fetched hourly from SGIP Signal. Today's event fills in progressively as 5-minute data becomes available. Historical data goes back approximately 30 days from initial deployment.
 
@@ -236,7 +241,9 @@ The price server is provided **as-is, on a best-efforts basis**, free of charge 
 **Upstream data.** The prices and emissions values we publish are derived from third-party sources we do not control:
 
 - Feed-based prices come from [GridX](https://www.gridx.com/) CalFUSE (sourced from CAISO Day-Ahead Market)
-- Computed tariff definitions come from the [OpenEI Utility Rate Database](https://openei.org/wiki/Utility_Rate_Database)
+- Computed tariff definitions come from two sources:
+  - [URPX](https://lfenergy.org/projects/utility-rate-plan-exchange-urpx/) (Utility Rate Plan eXchange) — the LF Energy semantic standard for utility rate plans, sourced from the [`urpx-tariffs`](https://github.com/grid-coordination/urpx-tariffs) catalog
+  - [OpenEI Utility Rate Database](https://openei.org/wiki/Utility_Rate_Database) — transitional, where URPX coverage does not yet exist
 - GHG emissions come from [SGIP Signal](https://sgipsignal.com/) (operated by WattTime for the CPUC)
 
 If an upstream source publishes incorrect, delayed, or missing data, that error will flow through to what the price server publishes. Our role is to repackage these signals into the OpenADR 3 protocol — we are not the source of truth for the underlying prices or emissions rates.
@@ -257,11 +264,11 @@ By accessing the price server (HTTPS API, MQTT broker, or this documentation), y
 
 If you need high-volume or low-latency access, [open a Discussion](https://github.com/grid-coordination/price-server-user-guide/discussions) — we'd rather help you get what you need than have you hammer the public endpoint.
 
-**Attribution and redistribution.** You may redistribute, cache, or republish the data the price server provides. If you do, please cite the price server and the relevant upstream source (GridX/CalFUSE, OpenEI URDB, SGIP Signal/WattTime) so downstream consumers can trace provenance. Do not represent yourself as the original source of the data, and do not represent your republished signals as endorsed or warranted by us or by the upstream sources.
+**Attribution and redistribution.** You may redistribute, cache, or republish the data the price server provides. If you do, please cite the price server and the relevant upstream source (GridX/CalFUSE, URPX/`urpx-tariffs`, OpenEI URDB, SGIP Signal/WattTime) so downstream consumers can trace provenance. Do not represent yourself as the original source of the data, and do not represent your republished signals as endorsed or warranted by us or by the upstream sources.
 
 **Indemnification.** You agree to indemnify and hold harmless Clark Communications Corporation, its operators, and the upstream data providers from any claims, damages, or liabilities arising from your use of the service or the data it publishes — including any decisions, automated actions, or downstream consequences resulting from price or emissions values you consume from this service.
 
-**No grant of rights to upstream data.** The price server's role is to repackage third-party signals into the OpenADR 3 protocol. Your use of the data published here does not grant you any license, ownership, or other rights in the underlying CAISO market data, URDB tariff definitions, or SGIP Signal emissions data beyond what those upstream sources independently grant. If your use case requires a formal data license, obtain it from the relevant upstream provider.
+**No grant of rights to upstream data.** The price server's role is to repackage third-party signals into the OpenADR 3 protocol. Your use of the data published here does not grant you any license, ownership, or other rights in the underlying CAISO market data, URPX rate plans, URDB tariff definitions, or SGIP Signal emissions data beyond what those upstream sources independently grant. If your use case requires a formal data license, obtain it from the relevant upstream provider.
 
 **Modification and termination.** We may modify, rate-limit, suspend, or terminate access — for any user or in general — at any time, with or without notice, and without liability. We may modify these terms at any time by updating this document; continued use after a change constitutes acceptance of the revised terms.
 
