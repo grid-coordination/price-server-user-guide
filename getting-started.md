@@ -19,7 +19,7 @@ To get prices, you need to identify two things:
 1. **Rate schedule** — the tariff that applies to your service. For PG&E residential, that's `EELEC`. For SCE residential, `TOU-PRIME`, `TOU-D-49`, or `TOU-D-58`. See the [full tariff list](README.md#available-tariffs).
 2. **Circuit (PG&E) or substation (SCE)** — which part of the distribution grid serves your location. See [circuits.md](circuits.md) for the complete list with location details.
 
-These combine into a **program name**: `EELEC-013532223` (PG&E) or `TOU-PRIME-Eagle Rock` (SCE). Each program has one event per day with 24 hourly prices.
+These combine into a **program name**: `EELEC-013532223` (PG&E) or `TOU-PRIME-Eagle Rock` (SCE). Each program has one event per day with 24 hourly prices (23 or 25 on PT DST transitions).
 
 If you already know your program name, skip to step 3.
 

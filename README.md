@@ -80,7 +80,7 @@ One program per URPX or URDB tariff. Unlike feed-based tariffs, computed tariffs
 | `SGIP_TID` | `MOER-TID` | Turlock Irrigation District |
 | `SGIP_WALC` | `MOER-WALC` | Western Area Lower Colorado |
 
-MOER programs publish hourly marginal operating emissions rate in **g CO2/kWh**, aggregated from native 5-minute [SGIP Signal](https://sgipsignal.com/) data. Each event contains 24 hourly intervals, same as pricing events.
+MOER programs publish hourly marginal operating emissions rate in **g CO2/kWh**, aggregated from native 5-minute [SGIP Signal](https://sgipsignal.com/) data. Each event contains 24 hourly intervals (23 or 25 on DST transition days), same shape as pricing events.
 
 Tens of pricing tariffs plus GHG emissions for California grid regions, with more added over time. See [Discovering what's currently live](#discovering-whats-currently-live) for a programmatic enumeration.
 
@@ -187,15 +187,18 @@ One program per tariff (computed) or per tariff × location (feed-based):
 
 ### Events
 
-One event per program per day, with 24 hourly intervals:
+One event per program per day, with 24 hourly intervals on normal days (23 on PT spring-forward DST days, 25 on fall-back):
 
 | Field | Pricing Example | GHG Example |
 |-------|----------------|-------------|
 | `eventName` | `EELEC-013532223-2026-04-12` | `MOER-PGE-2026-04-12` |
 | `programID` | UUID linking to the program | UUID linking to the program |
-| `intervals[n].id` | Hour of day (0 = midnight, 23 = 11 PM) | Hour of day (0 = midnight, 23 = 11 PM) |
+| `intervals[n].intervalPeriod.start` | UTC `Z` ISO instant, e.g. `2026-04-12T07:00:00Z` | same |
+| `intervals[n].id` | Hour of day in program zone (0–23 normally; 0–22 on spring-forward, 0–24 on fall-back) | same |
 | `intervals[n].payloads[0].type` | `PRICE` | `GHG` |
 | `intervals[n].payloads[0].values[0]` | `0.02622` ($/kWh) | `661.2` (g CO2/kWh) |
+
+`intervalPeriod.start` is the canonical, zone-unambiguous source of truth for which hour an interval represents. `id` is convenient for `:00` printing in the program's operating zone but loses the offset across DST transitions.
 
 ### Forward window and history
 
@@ -220,7 +223,7 @@ Step-by-step guides for connecting with different client libraries:
 | Clojure | [clj-oa3-client](https://github.com/grid-coordination/clj-oa3-client) | [tutorial-clojure.md](tutorial-clojure.md) |
 | Rust | [openleadr-rs (LF Energy)](https://github.com/OpenLEADR/openleadr-rs) | [tutorial-rust.md](tutorial-rust.md) |
 
-Each tutorial covers listing programs, finding a circuit, fetching 24-hour prices, and charting. No authentication is required.
+Each tutorial covers listing programs, finding a circuit, fetching a day's hourly prices, and charting. No authentication is required.
 
 ## MQTT notifications
 

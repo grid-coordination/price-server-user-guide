@@ -10,7 +10,7 @@ By the end, you'll have a REPL session that:
 
 1. Lists all programs in the price server (one per PG&E circuit)
 2. Looks up a specific circuit's program
-3. Fetches today's 24 hourly prices and prints a table
+3. Fetches today's hourly prices (24 intervals on a normal day; 23 or 25 on DST transitions) and prints a table
 4. Renders a Vega-Lite chart of those prices in the browser
 
 ## The price server
@@ -134,7 +134,7 @@ pid
 ;=> 1
 ```
 
-There's one event per circuit per day. Each event has 24 intervals (one per hour):
+There's one event per circuit per day. Each event has 24 intervals (one per hour) on a normal day, 23 on PT spring-forward DST days, 25 on fall-back. Each interval also carries an `:openadr.interval/interval-period` whose `:start` is the canonical UTC `Z` instant:
 
 ```clojure
 (def event (first events))

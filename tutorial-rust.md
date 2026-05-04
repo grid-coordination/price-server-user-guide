@@ -10,7 +10,7 @@ By the end, you'll have a Rust program that:
 
 1. Lists all programs in the price server (PG&E + SCE tariffs)
 2. Finds a specific circuit's program
-3. Fetches today's 24 hourly prices and prints a formatted table
+3. Fetches today's hourly prices (24 hours on a normal day; 23 or 25 on DST transitions) and prints a formatted table
 4. Shows today and tomorrow prices side by side
 
 ## The price server
@@ -203,7 +203,14 @@ async fn main() {
              format!("Tomorrow ({})", &tomorrow));
     println!("{:-<50}", "");
 
-    for hour in 0..24 {
+    // Normally 24 hours; PT DST transitions produce 23 or 25 intervals — bound the
+    // loop by the actual interval count so the table reflects what the server served.
+    let n_hours = [today_event, tomorrow_event]
+        .iter()
+        .filter_map(|e| e.and_then(|ev| ev.content().intervals.as_ref()).map(|i| i.len()))
+        .max()
+        .unwrap_or(24);
+    for hour in 0..n_hours {
         let get_price = |event: Option<&openleadr_client::EventClient<VirtualEndNode>>| -> String {
             event
                 .and_then(|e| e.content().intervals.as_ref())

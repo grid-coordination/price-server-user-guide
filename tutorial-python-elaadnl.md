@@ -11,7 +11,7 @@ This tutorial walks you through using [openadr3-client](https://github.com/Elaad
 By the end, you'll have a script that:
 
 1. Lists all programs in the price server (PG&E + SCE tariffs)
-2. Fetches today's 24 hourly prices for a specific circuit
+2. Fetches today's hourly prices for a specific circuit (24 intervals on a normal day; 23 or 25 on DST transitions)
 3. Prints a formatted price table
 
 ## The price server
@@ -169,16 +169,17 @@ event.programID           # str: UUID of the parent program
 event.intervals           # tuple[Interval, ...] | None
 
 # Interval fields
-interval.id               # int: hour of day (0-23)
+interval.id               # int: hour of day in program zone (0-23 normally;
+                          #   0-22 on PT spring-forward, 0-24 on fall-back)
 interval.payloads         # tuple[EventPayload, ...]
-interval.interval_period  # IntervalPeriod | None
+interval.interval_period  # IntervalPeriod | None — .start is canonical UTC Z instant
 
 # Payload fields
 payload.type              # EventPayloadType: PRICE
 payload.values            # tuple[float, ...]
 ```
 
-Intervals are ordered by hour (0 = midnight local, 23 = 11 PM local). Prices are marginal cost in USD/kWh from the CAISO Day-Ahead Market.
+Intervals are ordered by hour in the program's operating zone (0 = midnight local, normally through 23 = 11 PM local; on DST transition days the count is 23 or 25 instead of 24). For zone-unambiguous wall times, use `interval.interval_period.start` (UTC `Z` ISO instant). Prices are marginal cost in USD/kWh from the CAISO Day-Ahead Market.
 
 ## Going further
 

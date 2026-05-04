@@ -10,7 +10,7 @@ By the end, you'll have a script that:
 
 1. Lists all programs in the price server (PG&E + SCE tariffs)
 2. Looks up a specific circuit's program
-3. Fetches today's 24 hourly prices and prints a table
+3. Fetches today's hourly prices (24 intervals on a normal day; 23 or 25 on DST transitions) and prints a table
 4. Charts those prices with matplotlib
 
 ## The price server
@@ -121,7 +121,9 @@ if not events:
 today = date.today().isoformat()
 event = next((e for e in events if today in e.event_name), events[0])
 
-# Each interval id is the hour-of-day (0..23). payload[0].values[0] is the price.
+# interval.id is the hour-of-day in the program zone (0..23 normally; 0..22 on PT
+# spring-forward, 0..24 on fall-back). interval.interval_period.start is the canonical
+# UTC Z instant. payload[0].values[0] is the price.
 rows = []
 for interval in event.intervals:
     hour = interval.id
