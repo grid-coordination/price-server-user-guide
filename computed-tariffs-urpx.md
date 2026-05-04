@@ -1,6 +1,6 @@
 # URPX computed tariffs
 
-The price server publishes the following 23 computed-tariff programs sourced from [URPX](https://lfenergy.org/projects/utility-rate-plan-exchange-urpx/) (Utility Rate Plan eXchange) — the LF Energy semantic standard for utility rate plans. Source filings live in the [`urpx-tariffs`](https://github.com/grid-coordination/urpx-tariffs) catalog.
+The price server publishes the following 27 computed-tariff programs sourced from [URPX](https://lfenergy.org/projects/utility-rate-plan-exchange-urpx/) (Utility Rate Plan eXchange) — the LF Energy semantic standard for utility rate plans. Source filings live in the [`urpx-tariffs`](https://github.com/grid-coordination/urpx-tariffs) catalog.
 
 Programs are listed by `programName`. Use `GET /programs?programName=<name>` to look one up, then `GET /events?programID=<id>` to fetch its hourly prices.
 
@@ -25,12 +25,16 @@ Most rate plans publish a single program. A few base plans are also offered with
 
 ## SDG&E (San Diego Gas & Electric)
 
-| programName       | Description                                                                                                              |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `SDGE-DR-SES`     | Schedule DR-SES Domestic Time-of-Use for Households with a Solar Energy System                                           |
-| `SDGE-EV-TOU-5`   | Schedule EV-TOU-5 Cost-Based Domestic Time-of-Use for Households with Electric Vehicles                                  |
-| `SDGE-TOU-DR2`    | Schedule TOU-DR2 Residential Time-of-Use                                                                                 |
-| `SDGE-TOU-ELEC`   | Schedule TOU-ELEC Domestic Time-of-Use for Households with Electric Vehicles, Energy Storage, or Electric Heat Pumps     |
+| programName            | Description                                                                                                              |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `SDGE-DR-SES`          | Schedule DR-SES Domestic Time-of-Use for Households with a Solar Energy System                                           |
+| `SDGE-DR-SES-DRAH`     | Schedule DR-SES + Deed-Restricted Affordable Housing (DRAH) BSC Discount                                                 |
+| `SDGE-EV-TOU-5`        | Schedule EV-TOU-5 Cost-Based Domestic Time-of-Use for Households with Electric Vehicles                                  |
+| `SDGE-EV-TOU-5-DRAH`   | Schedule EV-TOU-5 + Deed-Restricted Affordable Housing (DRAH) BSC Discount                                               |
+| `SDGE-TOU-DR2`         | Schedule TOU-DR2 Residential Time-of-Use                                                                                 |
+| `SDGE-TOU-DR2-DRAH`    | Schedule TOU-DR2 + Deed-Restricted Affordable Housing (DRAH) BSC Discount                                                |
+| `SDGE-TOU-ELEC`        | Schedule TOU-ELEC Domestic Time-of-Use for Households with Electric Vehicles, Energy Storage, or Electric Heat Pumps     |
+| `SDGE-TOU-ELEC-DRAH`   | Schedule TOU-ELEC + Deed-Restricted Affordable Housing (DRAH) BSC Discount                                               |
 
 ## CPAU (City of Palo Alto Utilities)
 

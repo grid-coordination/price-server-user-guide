@@ -52,7 +52,7 @@ Each tariff × location combination is an OpenADR 3 program. PG&E programs are n
 
 Tariffs modelled in URPX from utility PDF filings. Prices are computed from the tariff definition — no external data feed needed. The catalog covers PG&E, SCE, SDG&E, CPAU (City of Palo Alto Utilities), and LADWP residential schedules, with more added regularly.
 
-URPX rate plans support **rate-plan modifier** composition — e.g. an energy efficiency credit (EEC), hardship rate adjuster (HRA), net surplus electricity credit (NSE), or income-qualified discount (CARE/FERA, where modeled). Each (base, modifier) combination becomes its own program with its own price schedule.
+URPX rate plans support **rate-plan modifier** composition — e.g. an energy efficiency credit (EEC), hardship rate adjuster (HRA), net surplus electricity credit (NSE), an income-qualified discount (CARE/FERA, where modeled), an affordable-housing Base Services Charge discount (SDG&E DRAH), or a deed-restricted-housing BSC discount (SCE Deed-Restricted). Each (base, modifier) combination becomes its own program with its own price schedule.
 
 Programs follow a CURIE-derived naming convention: `<UTILITY>-<RATE-ID>` for bases (e.g. `CPAU-E-1`, `SCE-D`, `PGE-E-ELEC`), and `<UTILITY>-<RATE-ID>-<MODIFIER-ID>` for modifier-applied variants (e.g. `SCE-D-DEED-RESTRICTED`, `CPAU-E-1-E-EEC-1`).
 
