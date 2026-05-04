@@ -28,10 +28,10 @@ No authentication is required.
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install 'python-oa3-client>=0.3.0' matplotlib tabulate
+pip install 'python-oa3-client>=0.4.0' matplotlib tabulate
 ```
 
-`matplotlib` is only needed for the chart at the end. `tabulate` is for pretty-printing tables. Version **0.3.0** or newer is required — it adds `user_agent` support and typed `payload_descriptors` models.
+`matplotlib` is only needed for the chart at the end. `tabulate` is for pretty-printing tables. Version **0.4.0** or newer is required — it pulls in `python-oa3 0.3.0+` which exposes datetimes as zone-aware `pendulum.DateTime` end-to-end (matching the OpenADR spec's UTC `Z` form on the wire).
 
 ## 2. Connect and list programs
 

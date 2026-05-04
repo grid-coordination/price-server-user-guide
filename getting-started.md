@@ -72,7 +72,12 @@ curl -s "https://price.grid-coordination.energy/openadr3/3.1.0/events?programID=
   | python3 -m json.tool
 ```
 
-Each event covers one day and contains 24 intervals (one per hour). The interval `id` is the hour of day (0 = midnight local, 23 = 11 PM). The price is in `payloads[0].values[0]`, in USD/kWh.
+Each event covers one day and contains 24 intervals (one per hour). The price is in `payloads[0].values[0]`, in USD/kWh. There are two ways to know which hour each interval represents:
+
+- **`interval.intervalPeriod.start`** — canonical UTC `Z` ISO instant (e.g. `"2026-05-04T07:00:00Z"`). This is the spec-correct, zone-unambiguous source of truth and is the recommended approach. Convert to your display timezone with any standard datetime library.
+- **`interval.id`** — integer 0–23 (or 0–24 on PT fall-back DST days, 0–22 on spring-forward) representing hour-of-day in the program's operating zone. Convenient for `:00` printing as in the example below.
+
+DST transition days are correctly served as 23 or 25 intervals in the program's zone — the per-interval `intervalPeriod.start` reflects this without ambiguity.
 
 ## 4. Print a price table
 

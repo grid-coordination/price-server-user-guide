@@ -33,7 +33,7 @@ mkdir pge-prices && cd pge-prices
 
 ```clojure
 ;; deps.edn
-{:deps {energy.grid-coordination/clj-oa3-client {:mvn/version "0.3.4"}
+{:deps {energy.grid-coordination/clj-oa3-client {:mvn/version "0.3.5"}
         metasoarous/oz                          {:mvn/version "2.0.0-alpha5"}}
  :aliases
  {:repl {:main-opts ["-m" "nrepl.cmdline"]
