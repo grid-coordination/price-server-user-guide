@@ -134,7 +134,7 @@ pid
 ;=> 1
 ```
 
-There's one event per circuit per day. Each event has 24 intervals (one per hour) on a normal day, 23 on PT spring-forward DST days, 25 on fall-back. Each interval also carries an `:openadr.interval/interval-period` whose `:start` is the canonical UTC `Z` instant:
+There's one event per circuit per day. Each event has 24 intervals (one per hour) on a normal day, 23 on PT spring-forward DST days, 25 on fall-back. Each interval also carries an `:openadr.interval/interval-period` whose `:start` is a `java.time.ZonedDateTime` at the canonical UTC `Z` offset:
 
 ```clojure
 (def event (first events))
