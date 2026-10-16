@@ -262,7 +262,7 @@ The price server also publishes hourly marginal GHG emissions (MOER) for 11 Cali
 moer_prog = ven.find_program_by_name("MOER-PGE")
 print(f"GHG program: {moer_prog.program_name}")
 print(f"  payload: {moer_prog.payload_descriptors[0].payload_type}")  # "GHG"
-print(f"  units:   {moer_prog.payload_descriptors[0].units}")          # "g/kWh"
+print(f"  units:   {moer_prog.payload_descriptors[0].units}")          # "GHG"
 
 # Fetch today's emissions
 moer_events = ven.poll_events("MOER-PGE")

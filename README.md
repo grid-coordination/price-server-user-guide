@@ -182,7 +182,7 @@ One program per tariff (computed) or per tariff × location (feed-based):
 | `programName` | `EELEC-013532223` | `CPAU-E-1` | `SCE-Time-of-use Domestic: TOU-D-2` |
 | `programLongName` | `PG&E EELEC — circuit 013532223` | `City of Palo Alto Utilities Residential Electric Service (URPX)` | `Southern California Edison Co Time-of-use Domestic: TOU-D-2 (TOU, URDB)` |
 | `payloadDescriptors[0].payloadType` | `PRICE` | `PRICE` | `PRICE` |
-| `payloadDescriptors[0].units` | `kWh` | `kWh` | `kWh` |
+| `payloadDescriptors[0].units` | `KWH` | `KWH` | `KWH` |
 | `payloadDescriptors[0].currency` | `USD` | `USD` | `USD` |
 
 ### Events
@@ -228,6 +228,10 @@ Each tutorial covers listing programs, finding a circuit, fetching a day's hourl
 ## MQTT notifications
 
 Real-time push notifications for price updates. See [mqtt-notifications.md](mqtt-notifications.md).
+
+## Changelog
+
+Client-visible changes to the server are listed in [CHANGELOG.md](CHANGELOG.md).
 
 ## Contributing
 
