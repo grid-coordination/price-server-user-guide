@@ -77,19 +77,24 @@ Subscribe to `ALL` to receive all event operations, or pick specific ones. A cli
 
 ## Message format
 
-Each message is a JSON object representing the OpenADR 3 entity that was created, updated, or deleted. For example, an event CREATE notification:
+Each message is a JSON envelope: `objectType` and `operation` (`CREATE`, `UPDATE` or `DELETE`) describe the change, and `object` holds the OpenADR 3 entity as created, updated or deleted. For example, an event CREATE notification:
 
 ```json
 {
   "objectType": "EVENT",
-  "id": "b9729ed1-3748-444e-83c0-c895f27749bf",
-  "programID": "b54d3d1f-bc87-4e47-bbc1-2b95958283fc",
-  "eventName": "EELEC-013532223-2026-04-12",
-  "intervals": [
-    {"id": 0, "payloads": [{"type": "PRICE", "values": [0.02622]}]},
-    {"id": 1, "payloads": [{"type": "PRICE", "values": [0.02500]}]},
-    "..."
-  ]
+  "operation": "CREATE",
+  "object": {
+    "objectType": "EVENT",
+    "id": "b9d3c37c-ea50-391b-bd5a-a7e583a9aa17",
+    "programID": "cd63ca2d-f107-49cb-881d-6e9160b060f2",
+    "eventName": "MOER-PGE-2026-10-19",
+    "intervalPeriod": {"start": "2026-10-19T07:00:00Z", "duration": "PT24H"},
+    "intervals": [
+      {"id": 0, "intervalPeriod": {"start": "2026-10-19T07:00:00Z", "duration": "PT1H"},
+       "payloads": [{"type": "GHG", "values": [440.04]}]},
+      "..."
+    ]
+  }
 }
 ```
 
@@ -132,8 +137,9 @@ def on_connect(client, userdata, flags, rc, props=None):
     client.subscribe(f"OpenADR/3.1.0/programs/{PROGRAM_ID}/events/+")
 
 def on_message(client, userdata, msg):
-    event = json.loads(msg.payload)
-    print(f"{msg.topic}: {event.get('eventName', '?')}")
+    note = json.loads(msg.payload)
+    event = note["object"]
+    print(f"{msg.topic}: {note['operation']} {event.get('eventName', '?')}")
 
 client = mqtt.Client(
     client_id="my-price-listener",
