@@ -66,7 +66,7 @@ Example response:
 }
 ```
 
-Subscribe to `ALL` to receive all event operations, or pick specific ones.
+Subscribe to `ALL` to receive all event operations, or pick specific ones. A client that follows particular programs should subscribe to each program's events topic; the global `OpenADR/3.1.0/events/+` topics carry the events of every program on the server, including [simulated demo programs](demo-programs.md).
 
 | Discovery endpoint | Description |
 |----------|-------------|
@@ -97,20 +97,22 @@ Each message is a JSON object representing the OpenADR 3 entity that was created
 
 ### mosquitto_sub (CLI)
 
+Replace `<programID>` with your program's `id` from `GET /programs?programName=<name>`.
+
 ```bash
 # Plain TCP
 mosquitto_sub -h mqtt.grid-coordination.energy -p 1883 \
-  -t 'OpenADR/3.1.0/events/#' -v
+  -t 'OpenADR/3.1.0/programs/<programID>/events/+' -v
 
 # TLS (Linux)
 mosquitto_sub -h mqtt.grid-coordination.energy -p 8883 \
   --capath /etc/ssl/certs \
-  -t 'OpenADR/3.1.0/events/#' -v
+  -t 'OpenADR/3.1.0/programs/<programID>/events/+' -v
 
 # TLS (macOS)
 mosquitto_sub -h mqtt.grid-coordination.energy -p 8883 \
   --cafile /etc/ssl/cert.pem \
-  -t 'OpenADR/3.1.0/events/#' -v
+  -t 'OpenADR/3.1.0/programs/<programID>/events/+' -v
 ```
 
 ### Python (paho-mqtt)
@@ -123,9 +125,11 @@ pip install paho-mqtt
 import paho.mqtt.client as mqtt
 import ssl, json
 
+PROGRAM_ID = "<programID>"
+
 def on_connect(client, userdata, flags, rc, props=None):
     print(f"Connected (rc={rc})")
-    client.subscribe("OpenADR/3.1.0/events/#")
+    client.subscribe(f"OpenADR/3.1.0/programs/{PROGRAM_ID}/events/+")
 
 def on_message(client, userdata, msg):
     event = json.loads(msg.payload)
@@ -156,7 +160,7 @@ client.loop_forever()
               {:client-id "my-price-listener"}))
 
 (mh/subscribe client
-  {"OpenADR/3.1.0/events/#" 1}
+  {"OpenADR/3.1.0/programs/<programID>/events/+" 1}
   (fn [topic meta payload]
     (println topic ":" (String. payload))))
 ```

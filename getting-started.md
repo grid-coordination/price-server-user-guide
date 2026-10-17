@@ -155,22 +155,22 @@ The `payloadType` is `GHG` and the values are in **g CO2/kWh**. Available progra
 
 ## 6. Subscribe to updates via MQTT
 
-For real-time price notifications, subscribe to the MQTT broker:
+For real-time price notifications, subscribe to your program's events topic, using `PROGRAM_ID` from step 3:
 
 ```bash
 # Plain TCP
 mosquitto_sub -h mqtt.grid-coordination.energy -p 1883 \
-  -t 'OpenADR/3.1.0/events/#' -v
+  -t "OpenADR/3.1.0/programs/$PROGRAM_ID/events/+" -v
 
 # TLS (Linux)
 mosquitto_sub -h mqtt.grid-coordination.energy -p 8883 \
   --capath /etc/ssl/certs \
-  -t 'OpenADR/3.1.0/events/#' -v
+  -t "OpenADR/3.1.0/programs/$PROGRAM_ID/events/+" -v
 
 # TLS (macOS)
 mosquitto_sub -h mqtt.grid-coordination.energy -p 8883 \
   --cafile /etc/ssl/cert.pem \
-  -t 'OpenADR/3.1.0/events/#' -v
+  -t "OpenADR/3.1.0/programs/$PROGRAM_ID/events/+" -v
 ```
 
 See [mqtt-notifications.md](mqtt-notifications.md) for more details.

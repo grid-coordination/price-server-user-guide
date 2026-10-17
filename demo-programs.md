@@ -2,7 +2,7 @@
 
 Programs whose names start with `DEMO-` carry **simulated** data for demonstrations and VEN testing. They are not real grid signals: no utility, CAISO or grid operator issued them. Every event on them has an `eventName` starting with `SIMULATED-`, and every text value starts with `SIMULATED:`.
 
-Demo programs exist only while a demo or test is running, so most of the time `GET /programs` lists none. Their events go out on the same channels as price events: `GET /events` without a `programID` filter returns them, and so do the global `OpenADR/3.1.0/events/#` MQTT topics. A VEN that must not act on them should filter by `programID`, or ignore programs whose `programName` starts with `DEMO-`.
+Demo programs exist only while a demo or test is running, so most of the time `GET /programs` lists none. Like every event on the server, a demo event belongs to its program: a client that polls `/events?programID=<id>` or subscribes to `OpenADR/3.1.0/programs/<id>/events/+` for its own programs never receives demo events. They appear only on the unfiltered paths (`GET /events` without `programID`, and the global `OpenADR/3.1.0/events/+` topics), which carry every program's events.
 
 ## Programs
 

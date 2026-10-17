@@ -287,7 +287,7 @@ Available MOER programs: `MOER-PGE`, `MOER-SCE`, `MOER-SDGE`, `MOER-LADWP`, `MOE
 - **PG&E tariffs**: residential (`EELEC`), EV (`BEV1`, `BEV2P`, `BEV2S`), commercial (`B6`, `B10P`/`B10S`, `B19P`/`B19S`, `B20P`/`B20S`), agricultural (`AG-A1`, `AG-A2`, `AGBP`/`AGBS`, `AGCP`/`AGCS`) — each served across PG&E distribution feeders.
 - **SCE tariffs**: residential TOU, EV, general service, public authority — each served across SCE substations. SCE prices are significantly higher (~$0.18/kWh vs PG&E's ~$0.03/kWh).
 - **GHG emissions**: 11 MOER programs covering California and neighboring grid regions. Values in g CO2/kWh. See [README.md#ghg-emissions-moer](README.md#ghg-emissions-moer) for the full list.
-- **Subscribe to price updates via MQTT**: the broker at `mqtt.grid-coordination.energy` supports anonymous subscribe on `openadr3/3.1.0/events/#`. See [mqtt-notifications.md](mqtt-notifications.md) for details.
+- **Subscribe to price updates via MQTT**: the broker at `mqtt.grid-coordination.energy` supports anonymous subscribe; subscribe to your program's topic, `OpenADR/3.1.0/programs/<programID>/events/+`. See [mqtt-notifications.md](mqtt-notifications.md) for details.
 - **User-Agent**: set `user_agent="your-app/1.0"` when creating the client so the server operator can identify your application in access logs.
 
 ## Full script

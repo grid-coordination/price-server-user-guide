@@ -128,7 +128,7 @@ Standard OpenADR 3 endpoints: `/programs`, `/events`, `/subscriptions`, `/notifi
 | **MQTT over TLS (recommended)** | `mqtts://mqtt.grid-coordination.energy` | 8883 |
 | **Plain MQTT** | `tcp://mqtt.grid-coordination.energy` | 1883 |
 
-Anonymous subscribe to `OpenADR/3.1.0/events/#` for real-time price updates. No authentication required. See [mqtt-notifications.md](mqtt-notifications.md) for details.
+Subscribe to your program's topic, `OpenADR/3.1.0/programs/<programID>/events/+`, for real-time updates to its events. `OpenADR/3.1.0/events/#` carries the events of every program on the server. Anonymous subscribe; no authentication required. See [mqtt-notifications.md](mqtt-notifications.md) for details.
 
 ### Broker discovery
 
