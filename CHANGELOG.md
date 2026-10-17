@@ -4,6 +4,7 @@ Changes visible to clients of the public price server, including corrections to 
 
 ## 2026-10-16
 
+- **Demo DOE events may set `randomizeStart`.** A `DEMO-DOE-<site>` schedule can carry `randomizeStart` (for example `PT5M`) on the event's own `intervalPeriod`. See [demo-programs.md](demo-programs.md).
 - **MQTT documentation corrections.** The server's MQTT behavior is unchanged; these fix what the guide said about it.
   - Topics are case-sensitive and start with `OpenADR/3.1.0/`. The README and the Clojure, Python and Rust tutorials gave `openadr3/3.1.0/events/#`, which matches nothing.
   - Notifications are envelopes, `{"objectType", "operation", "object"}`, with the entity in `object`. [mqtt-notifications.md](mqtt-notifications.md) showed a bare entity, and its Python example printed `?` for every event name.

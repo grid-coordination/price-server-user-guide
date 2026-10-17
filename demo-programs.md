@@ -41,7 +41,7 @@ A cancelled alert is deleted.
 
 ## Simulated DOE events
 
-A schedule is one event with consecutive intervals. Each interval has its own `intervalPeriod` and one value for each direction published (import, export or both), in kW, sent as a JSON number with a decimal point. The event's own `intervalPeriod` spans the whole schedule.
+A schedule is one event with consecutive intervals. Each interval has its own `intervalPeriod` and one value for each direction published (import, export or both), in kW, sent as a JSON number with a decimal point. The event's own `intervalPeriod` spans the whole schedule. A schedule may also set `randomizeStart` (for example `PT5M`) on the event's `intervalPeriod`.
 
 ```json
 {
