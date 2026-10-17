@@ -84,6 +84,10 @@ MOER programs publish hourly marginal operating emissions rate in **g CO2/kWh**,
 
 Tens of pricing tariffs plus GHG emissions for California grid regions, with more added over time. See [Discovering what's currently live](#discovering-whats-currently-live) for a programmatic enumeration.
 
+### Simulated demo programs
+
+Programs named `DEMO-*` carry simulated Flex Alerts and dynamic operating envelopes for demonstrations and VEN testing. They are not real grid signals and exist only while a demo is running. See [demo-programs.md](demo-programs.md).
+
 ## Finding your program
 
 **For feed-based tariffs (GridX):** You need two things:
@@ -124,7 +128,7 @@ Standard OpenADR 3 endpoints: `/programs`, `/events`, `/subscriptions`, `/notifi
 | **MQTT over TLS (recommended)** | `mqtts://mqtt.grid-coordination.energy` | 8883 |
 | **Plain MQTT** | `tcp://mqtt.grid-coordination.energy` | 1883 |
 
-Anonymous subscribe to `openadr3/3.1.0/events/#` for real-time price updates. No authentication required. See [mqtt-notifications.md](mqtt-notifications.md) for details.
+Anonymous subscribe to `OpenADR/3.1.0/events/#` for real-time price updates. No authentication required. See [mqtt-notifications.md](mqtt-notifications.md) for details.
 
 ### Broker discovery
 
