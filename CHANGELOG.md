@@ -2,6 +2,10 @@
 
 Changes visible to clients of the public price server, including corrections to this guide, newest first.
 
+## 2026-10-19
+
+- **Invited demo operators can publish demo programs.** An authenticated admin API, separate from the VEN API, now publishes and deletes `DEMO-*` programs and their `SIMULATED-*` events. VENs see the same programs, events and MQTT notifications as before. See [demo-programs.md](demo-programs.md).
+
 ## 2026-10-16
 
 - **Demo DOE events may set `randomizeStart`.** A `DEMO-DOE-<site>` schedule can carry `randomizeStart` (for example `PT5M`) on the event's own `intervalPeriod`. See [demo-programs.md](demo-programs.md).
